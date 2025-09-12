@@ -130,15 +130,24 @@ class Dataset(pd.DataFrame):
             X_train_val, y_train_val, test_size=val_size_adjusted, 
             random_state=random_state, shuffle=shuffle
         )
-        
-        # Сохраняем разделенные данные как DataFrame
-        self._data_X_train = pd.DataFrame(X_train, columns=X.columns)
-        self._data_Y_train = pd.DataFrame(y_train, columns=y.columns)
-        self._data_X_valid = pd.DataFrame(X_val, columns=X.columns)
-        self._data_Y_valid = pd.DataFrame(y_val, columns=y.columns)
-        self._data_X_test = pd.DataFrame(X_test, columns=X.columns)
-        self._data_Y_test = pd.DataFrame(y_test, columns=y.columns)
 
+        self._data_X_train = X_train
+        self._data_Y_train = y_train
+        self._data_X_valid = X_val
+        self._data_Y_valid = y_val
+        self._data_X_test = X_test
+        self._data_Y_test = y_test
+
+
+        """ old
+        # Сохраняем разделенные данные как DataFrame
+        self._data_X_train = pd.DataFrame(X_train, columns=self.columns.drop(self._target_features))
+        self._data_Y_train = pd.DataFrame(y_train, columns=self._target_features)
+        self._data_X_valid = pd.DataFrame(X_val, columns=self.columns.drop(self._target_features))
+        self._data_Y_valid = pd.DataFrame(y_val, columns=self._target_features)
+        self._data_X_test = pd.DataFrame(X_test, columns=self.columns.drop(self._target_features))
+        self._data_Y_test = pd.DataFrame(y_test, columns=self._target_features)
+        """
     def get_train_data(self) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """Получить тренировочные данные"""
         return self.X_train, self.Y_train
