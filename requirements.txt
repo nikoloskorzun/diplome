@@ -1,0 +1,15 @@
+
+deap==1.4.3
+EMD-signal==1.6.4
+ipywidgets==7.8.5
+keras==3.9.2
+matplotlib==3.10.0
+
+
+
+scikeras==0.13.0
+scikit-learn==1.6.1
+scipy==1.15.2
+seaborn==0.13.2
+pandas==2.2.3
+sweetviz==2.3.1

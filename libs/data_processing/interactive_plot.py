@@ -241,4 +241,4 @@ def plot_interactive(dataset: Dataset):
     
     # Отображение элементов
     display(widgets.VBox([widgets.HBox([feature_selector, imfs_count]), output]))    # Отображение элементов
-    display(widgets.VBox([widgets.HBox([feature_selector, imfs_count]), output]))
+    #display(widgets.VBox([widgets.HBox([feature_selector, imfs_count]), output]))
