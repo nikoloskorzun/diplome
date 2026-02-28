@@ -38,7 +38,7 @@ def pearson_correlation_matrix(data):
             y = data[:, j]
             mean_x = np.mean(x)
             mean_y = np.mean(y)
-            cov = np.sum((x - mean_x) * (y - mean_y))
+            cov =  np.sum((x - mean_x) * (y - mean_y))
             std_x = np.sqrt(np.sum((x - mean_x)**2))
             std_y = np.sqrt(np.sum((y - mean_y)**2))
             if std_x == 0 or std_y == 0:

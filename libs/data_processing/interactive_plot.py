@@ -169,11 +169,58 @@ def plot_interactive(dataset: Dataset):
         disabled=False
     )
 
+
+
+    # Новые слайдеры для вертикальных линий
+    # Слайдер 1: Расстояние между линиями (Шаг)
+    step_slider = widgets.IntSlider(
+        value=20,
+        min=1,
+        max=400,
+        step=1,
+        description='шаг:'
+    )
+
+
+    
+    # Слайдер 2: Отступ от 0 (Смещение)
+    offset_slider = widgets.IntSlider(
+        value=0,
+        min=0,
+        max=100,
+        step=1,
+        description='Отступ:'
+    )
+
+
+    step_value = widgets.IntText(
+        value=20,
+        disabled=True,
+        layout=widgets.Layout(width='80px')
+    )
+    
+    # Связываем слайдер и текстовое поле (двусторонняя синхронизация)
+    widgets.jslink((step_slider, 'value'), (step_value, 'value'))
+    
+    
+    # Текстовое поле для отображения значения отступа
+    offset_value = widgets.IntText(
+        value=0,
+        disabled=True,
+        layout=widgets.Layout(width='80px')
+    )
+
+
+    widgets.jslink((offset_slider, 'value'), (offset_value, 'value'))
+
+
+
+
     # Создание контейнера для графика
     output = widgets.Output()
 
     # Функция обновления графика
-    def update_plot(selected_features, imfs_c):
+    def update_plot(selected_features, imfs_c, step, offset):
         with output:
             output.clear_output(wait=True)
             
@@ -224,6 +271,29 @@ def plot_interactive(dataset: Dataset):
                         label=f"imfs {j}",
                         linewidth=0.1
                         )
+            if step > 0:
+                # Генерируем позиции линий: от offset до конца данных с шагом step
+                # x в графике начинается с 1, поэтому корректируем логику, если нужно строго по индексу
+                # Здесь используем диапазон индексов массива (0-based), но plt.scatter использует x (1-based)
+                # Чтобы линии совпадали с точками, нужно учитывать сдвиг на 1, если x = range(1, N+1)
+                
+                line_positions = range(offset, len(dataset), step)
+                
+                for pos in line_positions:
+                    # Позиция для plt.axvline соответствует данным на оси X. 
+                    # Так как x = range(1, len+1), индекс 0 соответствует x=1.
+                    # Если offset=0, линия должна быть на x=1.
+                    x_pos = pos + 1 
+                    
+                    # Верхний график
+                    plt.subplot(2, 1, 1)
+                    plt.axvline(x=x_pos, color='magenta', linestyle='--', alpha=0.5, linewidth=1)
+                    
+                    # Нижний график
+                    plt.subplot(2, 1, 2)
+                    plt.axvline(x=x_pos, color='magenta', linestyle='--', alpha=0.5, linewidth=1)
+
+                
             plt.subplot(2, 1, 1)
             plt.title(f'Интерактивный график признаков (Целевая переменная: {target_column})')
             plt.xlabel('Номер наблюдения')
@@ -237,8 +307,10 @@ def plot_interactive(dataset: Dataset):
             plt.show()
 
     # Связывание виджетов с функцией
-    widgets.interactive_output(update_plot, {'selected_features': feature_selector, 'imfs_c':imfs_count})
+    widgets.interactive_output(update_plot, {'selected_features': feature_selector, 'imfs_c':imfs_count, 'step': step_slider, 'offset': offset_slider})
     
     # Отображение элементов
-    display(widgets.VBox([widgets.HBox([feature_selector, imfs_count]), output]))    # Отображение элементов
+
+
+    display(widgets.VBox([widgets.HBox([feature_selector, imfs_count, widgets.VBox([widgets.HBox([step_slider]), widgets.HBox([offset_slider])])]), output]))    # Отображение элементов
     #display(widgets.VBox([widgets.HBox([feature_selector, imfs_count]), output]))
